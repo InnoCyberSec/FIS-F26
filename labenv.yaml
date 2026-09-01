@@ -1,0 +1,64 @@
+# https://github.com/lima-vm/lima/blob/master/templates/default.yaml
+
+# For Apple Silicon users (MacOS 13+): specify vmType: "vz", use the aarch64 image, and uncomment the networks section below
+#  Or keep this config if you need qemu emulation of x86_64 architecture (slower)
+
+vmType: "qemu"
+
+arch: x86_64
+
+images:
+  - location: "https://github.com/Sh3b0/interactive-labs/releases/download/boxes/labenv-amd64.qcow2"
+    arch: x86_64
+
+# images:
+#   - location: "https://github.com/Sh3b0/interactive-labs/releases/download/boxes/labenv-arm64.qcow2"
+#     arch: aarch64
+
+cpus: 4
+memory: "4GiB"
+disk: "20GiB"
+
+containerd:
+  system: false
+  user: false
+
+## Uncomment to configure a shared directory with host, make sure to create the directory first at ~/shared
+# mounts:
+#   - location: "{{.Home}}/shared"
+#     writable: true
+#     mountPoint: "/home/ubuntu/shared"
+
+# Provisioning script runs after the VM is created or rebooted.
+provision:
+- mode: system
+  script: |
+    #!/bin/bash
+
+    # Fixes for some 'Name or service not known' errors
+    grep -qF "localhost.localdomain" /etc/hosts || echo "127.0.0.1  localhost.localdomain" | sudo tee -a /etc/hosts
+    grep -qF "lima-labenv" /etc/hosts || echo "127.0.0.1  lima-labenv" | sudo tee -a /etc/hosts
+
+    # Preparing studio container
+    mkdir -p /home/ubuntu/recordings
+    chown -R ubuntu:ubuntu /home/ubuntu/recordings
+    docker network create lab_net || true
+    docker pull -q sh3b0/studio:stable
+    docker run -p9000:9000 -d --name studio --network lab_net -v /home/ubuntu/recordings:/recordings sh3b0/studio:stable
+
+user:
+  name: ubuntu
+  uid: 1000
+  home: /home/ubuntu
+  shell: /usr/bin/fish
+
+hostResolver:
+  hosts:
+    host.docker.internal: host.lima.internal
+
+## For vz vmType
+# networks:
+#   - vzNAT: true
+
+portForwards:
+  - guestPortRange: [1, 65535]

@@ -1,0 +1,30 @@
+services:
+  labenv:
+    image: sh3b0/labenv:stable
+    container_name: labenv
+    ports:
+      - "127.0.0.1:3000:3000"
+      - "127.0.0.1:8080:8080"
+    environment:
+      - SHELL=/usr/bin/fish
+    volumes:
+      - ./workspace:/home/ubuntu
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - lab_net
+    restart: unless-stopped
+  
+  studio:
+    image: sh3b0/studio:stable
+    container_name: studio
+    ports:
+        - "127.0.0.1:9000:9000"
+    volumes:
+      - ./workspace/recordings:/recordings
+    networks:
+      - lab_net
+    restart: unless-stopped
+
+networks:
+  lab_net:
+    name: lab_net

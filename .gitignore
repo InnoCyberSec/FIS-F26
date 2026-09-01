@@ -1,0 +1,7 @@
+solutions/
+windows/
+qemu/
+config/
+workspace/
+*.iso
+*.cast
