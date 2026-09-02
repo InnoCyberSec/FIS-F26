@@ -44,7 +44,7 @@ provision:
     chown -R ubuntu:ubuntu /home/ubuntu/recordings
     docker network create lab_net || true
     docker pull -q sh3b0/studio:stable
-    docker run -p9000:9000 -d --name studio --network lab_net -v /home/ubuntu/recordings:/recordings sh3b0/studio:stable
+    docker run -p9000:9000 -d --restart always --name studio --network lab_net -v /home/ubuntu/recordings:/recordings sh3b0/studio:stable
 
 user:
   name: ubuntu
