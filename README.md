@@ -4,6 +4,8 @@
 
 - Lab 1: Cryptography and Steganography
 - Lab 2: Authentication
+- Lab 3: Malware Analysis
+- Lab 4: Penetration Testing
 
 ## Getting Started
 
