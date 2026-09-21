@@ -6,6 +6,7 @@
 - Lab 2: Authentication
 - Lab 3: Malware Analysis
 - Lab 4: Penetration Testing
+- Lab 5: BInary Exploitation
 
 ## Getting Started
 
